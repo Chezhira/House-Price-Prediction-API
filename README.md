@@ -1,20 +1,49 @@
-# House Price API (CatBoost + FastAPI)
+﻿# 🏠 House Price Prediction API  
+**CatBoost · FastAPI · Production-ready ML service**
 
-Artifacts are versioned under `artifacts/v1/`.
+## Overview
+This project builds and deploys a **house price prediction service** using a gradient-boosted tree model trained on structured real-estate data.  
+The focus is not only on model accuracy, but on **production readiness**: reproducibility, validation, testing, and API-based inference.
 
-## Run locally (Conda)
-```powershell
-conda activate ml311
-cd C:\Users\ziddm\data-work\house-price-api
-pip install -e .
-pytest -q
-uvicorn house_price_api.app:app --reload --host 127.0.0.1 --port 8000
-```
+The final model is served via a **FastAPI** application with schema validation, versioned artifacts, and automated tests.
 
-Swagger:
-- http://127.0.0.1:8000/docs
+---
 
-## Example request (PowerShell)
-```powershell
-irm "http://127.0.0.1:8000/predict" -Method Post -ContentType "application/json" -Body '{"record":{"Gr_Liv_Area":1710,"TotRms_AbvGrd":8,"Total_Bsmt_SF":856,"Year_Built":2003,"Year_Remod_Add":2003,"Year_Sold":2010}}'
-```
+## Problem Statement
+Accurately predict residential house prices based on property characteristics such as size, age, rooms, basement area, and sale timing, and expose predictions through a reliable HTTP API suitable for real-world integration.
+
+---
+
+## Modeling Approach
+- **Algorithm**: CatBoost Regressor (gradient-boosted decision trees)
+- **Why CatBoost**:
+  - Strong performance on tabular data
+  - Native handling of categorical features
+  - Robust to feature scaling and missing values
+- **Target**: Sale price (with experiments on log-transformed targets)
+
+### Feature Engineering Highlights
+- Total living area aggregation
+- Ratios (e.g. basement vs living area)
+- Property age and years since remodel
+- Log transforms for highly skewed variables
+- Explicit categorical feature handling
+
+---
+
+## Model Performance
+Validation metrics (hold-out set):
+
+| Metric | Value |
+|------|------|
+| MAE | **~12,800** |
+| Median Absolute Error | ~8,100 |
+| Mean Error (bias) | ~970 |
+| 95th Percentile Absolute Error | ~37,700 |
+
+These results indicate strong central accuracy with reasonable tail behavior, which was explicitly analyzed.
+
+---
+
+## Production Architecture
+This repository follows a **clean, production-oriented layout**:
